@@ -1,0 +1,14 @@
+{
+  "name": "im-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/gejiawen/im-demo.git",
+  "author": "gejiawen <806717031@qq.com> (http://blog.gejiawen.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.4.0",
+    "gulp-stylus": "^2.6.0",
+    "stylus": "^0.54.5"
+  }
+}
