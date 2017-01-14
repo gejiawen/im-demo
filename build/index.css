@@ -69,6 +69,30 @@
 .im-wrapper .im-main-block .content.collapse {
   height: 440px;
 }
+.im-wrapper .im-main-block .content .search {
+  cursor: text;
+  height: 44px;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  background-color: #fff;
+  position: relative;
+}
+.im-wrapper .im-main-block .content .search .fa {
+  color: #aaa;
+  position: absolute;
+  font-size: 20px;
+  top: 10px;
+  left: 6px;
+}
+.im-wrapper .im-main-block .content .search input {
+  border: 0;
+  width: 100%;
+  height: 100%;
+  outline: 0;
+  font-size: 16px;
+  text-indent: 30px;
+  color: #444;
+}
 .im-wrapper .im-main-block .content .sessions .session {
   border-bottom: 1px solid #eee;
   height: 65px;

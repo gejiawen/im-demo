@@ -14,8 +14,28 @@
             <div class="op fr"><i class="fa fa-angle-up fa-2x"></i></div>
         </div>
         <div class="content">
-            <div class="search hidden"></div>
-            <div class="sessions">
+            <div class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="搜索用户" func="search">
+            </div>
+            <div class="sessions result hidden">
+                <div class="session clearfix">
+                    <div class="highlight"></div>
+                    <div class="avatar fl">
+                        <img src="images/avatar.png" alt="">
+                    </div>
+                    <div class="customer fl">
+                        <div class="name">隐藏用户</div>
+                        <div class="msg">我是隐藏用户被你搜到了</div>
+                    </div>
+                    <div class="stamp fr hidden">
+                        <div class="del">&times;</div>
+                        <div class="time">20:30</div>
+                        <div class="count">2</div>
+                    </div>
+                </div>
+            </div>
+            <div class="sessions list">
                 <div class="session clearfix">
                     <div class="highlight"></div>
                     <div class="avatar fl">
@@ -69,7 +89,7 @@
             <div class="title fl">玩转组合</div>
             <div class="op fr">
                 <i class="fa fa-gear" func="setting-window" current="chat"></i>
-                <!--<i class="fa fa-window-maximize" func="resize-chat"></i>-->
+                <i class="fa fa-window-maximize" func="resize-chat"></i>
                 <i class="fa fa-close" func="close-chat"></i>
             </div>
         </div>

@@ -9,7 +9,7 @@ $(function () {
     var props = {
         $main: $('.im-main-block'),
         $chat: $('.im-chat-block'),
-        $sessions: $('.im-main-block .sessions'),
+        $sessions: $('.im-main-block .sessions.list'),
         $session: $('.im-main-block .session'),
 
         $chatContent: $('.im-chat-block .content.chat'),
@@ -28,6 +28,8 @@ $(function () {
         $clearChatHistory: $('[func="clear-chat-history"]'),
 
         $goBackChat: $('[func="go-back-chat"]'),
+
+        $search: $('[func="search"]'),
 
         $yourMessage: $('[func="your-message"]'),
         $send: $('[func="send-message"]')
@@ -134,19 +136,35 @@ $(function () {
                 console.log(scrollHeight)
 
                 if (scrollHeight > 20) {
+
                     $(this).css({
                         'min-height': '20px',
-                        'height': scrollHeight + 4 + 'px'
+                        'height': parseInt(scrollHeight / 20) * 20 + 'px'
                     })
                 }
 
                 if (scrollHeight >= 100) {
                     $(this).css({
-                        'max-height': '108px',
-                        'height': '108px'
+                        'max-height': '100px',
+                        'height': '100px'
                     })
                 }
             })
+
+            props.$search.on('input', function () {
+                var val = $(this).val()
+
+                if (!val) {
+                    $('.sessions.result').addClass('hidden')
+                    $('.sessions.list').removeClass('hidden')
+                } else {
+                    $('.sessions.result').removeClass('hidden')
+                    $('.sessions.list').addClass('hidden')
+                }
+
+                // TODO
+            })
+
 
         },
         collapse: function () {
