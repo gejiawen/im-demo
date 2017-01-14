@@ -10,26 +10,6 @@
 //color: rgb(51, 51, 51)
 }
 
-// common
-::-webkit-scrollbar {
-    width: 5px
-    height: 5px
-}
-
-::-webkit-scrollbar-track-piece {
-    background-color: #FFF
-    border-radius: 5px
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0)
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0)
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #CCC
-    border-radius: 5px
-    -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1)
-    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1)
-}
-
 .hidden {
     display: none !important
 }
@@ -47,7 +27,7 @@
         display: table
         content: " "
     }
-    ::after {
+    &::after {
         display: table
         content: " "
         clear: both
@@ -261,15 +241,86 @@
             }
         }
 
-        .content {
+        & > .content {
             border-right: 1px solid #CCC
             border-bottom: 1px solid #CCC
             border-left: 1px solid #CCC
             height: 350px
+            position: relative
+            background-color: #F8F8F8
 
             &.chat {
                 .messages {
+                    position: absolute
+                    top: 0
+                    right: 0
+                    bottom: 37px
+                    left: 0
+                    overflow-y: auto
 
+
+                    .message {
+                        position: relative
+                        margin: 20px 10px
+
+                        .avatar {
+                            position: relative
+                            img {
+                                width: 32px
+                                height: 32px
+                                border-radius: 3px
+                            }
+                            &::after {
+                                content: attr(data-username)
+                                position: absolute
+                                font-size: 12px
+                                color: #BBB
+                                top: 0
+                                left: 40px
+                                white-space: nowrap
+                            }
+                        }
+
+                        .content {
+                            max-width: 260px;
+                            margin: 20px 0 0 10px;
+                            position: relative
+                            line-height: 18px
+                            color: #444
+                            font-size: 14px
+                            padding: 7px 8px
+                            margin-left: 7px
+                            border-radius: 3px
+                            background-color: #FFF
+                            box-shadow: -1px 1px 1px #DDD
+                            word-wrap: break-word
+                            display: inline-block
+
+                            &::after {
+                                content: attr(data-stamp)
+                                white-space: nowrap
+                                position: absolute
+                                right: -30px
+                                bottom: 0
+                                color: #AAA
+                                font-size: 10px
+                            }
+                        }
+
+                        &.customer {
+
+                        }
+
+                        &.me {
+                            .content {
+                                margin: 0 10px 0 0
+                                &::after {
+                                    left: -30px
+                                    right: auto
+                                }
+                            }
+                        }
+                    }
                 }
 
                 .input-wrapper {
@@ -277,7 +328,7 @@
                     bottom: 0
                     left: 0
                     right: 0
-                    border: 1px solid #DDD
+                    border-top: 1px solid #DDD
                     border-bottom-width: 0
                     background: #FFF
                     box-sizing: border-box
@@ -346,11 +397,11 @@
                     cursor: pointer
 
                     .fa {
-                        margin-right: 5px;
-                        font-size: 18px;
-                        position: relative;
-                        top: 2px;
-                        width: 20px;
+                        margin-right: 5px
+                        font-size: 18px
+                        position: relative
+                        top: 2px
+                        width: 20px
                     }
                 }
 
@@ -377,8 +428,8 @@
                         margin: 10px 20px 0
 
                         &:hover {
-                            border: 1px solid #06C;
-                            background-color: #05A;
+                            border: 1px solid #06C
+                            background-color: #05A
                         }
                     }
                 }

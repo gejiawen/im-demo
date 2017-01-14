@@ -10,11 +10,14 @@ $(function () {
         $main: $('.im-main-block'),
         $chat: $('.im-chat-block'),
         $sessions: $('.im-main-block .sessions'),
-        $collapseIM: $('[func="collapse-im"]'),
         $session: $('.im-main-block .session'),
 
         $chatContent: $('.im-chat-block .content.chat'),
         $settingsContent: $('.im-chat-block .content.settings'),
+
+        $messages: $('.im-chat-block .content.chat .messages'),
+
+        $collapseIM: $('[func="collapse-im"]'),
 
         $settingWindow: $('[func="setting-window"]'),
         $resizeChat: $('[func="resize-chat"]'),
@@ -24,7 +27,10 @@ $(function () {
         $pinChat: $('[func="pin-chat"]'),
         $clearChatHistory: $('[func="clear-chat-history"]'),
 
-        $goBackChat: $('[func="go-back-chat"]')
+        $goBackChat: $('[func="go-back-chat"]'),
+
+        $yourMessage: $('[func="your-message"]'),
+        $send: $('[func="send-message"]')
     }
 
     var methods = {
@@ -37,6 +43,7 @@ $(function () {
             props.$session.on('click', function () {
                 methods.showChat(true)
                 $(this).addClass('active')
+                $(this).find('.count').html('0').addClass('hidden')
             })
 
             props.$settingWindow.on('click', function () {
@@ -98,6 +105,43 @@ $(function () {
                 props.$settingWindow.click()
             })
 
+            props.$send.on('click', function () {
+                var msg = props.$yourMessage.val()
+
+                if (!msg) {
+                    return
+                }
+
+                methods.genMe(msg)
+                props.$yourMessage.val('')
+                props.$yourMessage.css({
+                    'height': 0
+                });
+            })
+
+            props.$yourMessage.on('keyup', function (ev) {
+                if (ev.keyCode === 13) {
+                    props.$send.click()
+                }
+
+                var scrollHeight = ev.target.scrollHeight
+                console.log(scrollHeight)
+
+                if (scrollHeight > 20) {
+                    $(this).css({
+                        'min-height': '20px',
+                        'height': scrollHeight + 4 + 'px'
+                    })
+                }
+
+                if (scrollHeight >= 100) {
+                    $(this).css({
+                        'max-height': '108px',
+                        'height': '108px'
+                    })
+                }
+            })
+
         },
         collapse: function () {
             var $brand = props.$main.find('.brand .fa')
@@ -133,6 +177,29 @@ $(function () {
                 props.$chatContent.addClass('hidden')
                 props.$settingsContent.removeClass('hidden')
             }
+        },
+        genCustomer: function () {
+            var markup =
+                '<div class="message clearfix customer">' +
+                    '<div class="fl avatar" data-username="个股公告"><img src="images/customer.png" alt=""></div>' +
+                    '<div class="fl content" data-stamp="19:46">以后将提醒你持仓产品的新公告。改为提醒全部自选产品，请发送QB给我。</div>' +
+                '</div>'
+
+            props.$messages.append($(markup))
+            methods.scroll2Bottom()
+        },
+        genMe: function (msg) {
+            var markup =
+                '<div class="message clearfix me">' +
+                    '<div class="fr avatar"><img src="images/me.png" alt=""></div>' +
+                    '<div class="fr content" data-stamp="19:47">' + msg + '</div>' +
+                '</div>'
+
+            props.$messages.append($(markup))
+            methods.scroll2Bottom()
+        },
+        scroll2Bottom: function () {
+            props.$messages.scrollTop(props.$messages.height())
         },
 
 

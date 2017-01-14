@@ -69,17 +69,24 @@
             <div class="title fl">玩转组合</div>
             <div class="op fr">
                 <i class="fa fa-gear" func="setting-window" current="chat"></i>
-                <i class="fa fa-window-maximize" func="resize-chat"></i>
+                <!--<i class="fa fa-window-maximize" func="resize-chat"></i>-->
                 <i class="fa fa-close" func="close-chat"></i>
             </div>
         </div>
         <div class="content chat">
             <div class="messages">
-
+                <div class="message clearfix customer">
+                    <div class="fl avatar" data-username="个股公告"><img src="images/customer.png" alt=""></div>
+                    <div class="fl content" data-stamp="19:46">以后将提醒你持仓产品的新公告。改为提醒全部自选产品，请发送QB给我。</div>
+                </div>
+                <div class="message clearfix me">
+                    <div class="fr avatar"><img src="images/me.png" alt=""></div>
+                    <div class="fr content" data-stamp="19:47">好的，我知道了。</div>
+                </div>
             </div>
             <div class="input-wrapper">
                 <div class="editor">
-                    <textarea class="textarea" placeholder="请输入..."></textarea>
+                    <textarea class="textarea" placeholder="请输入..." autofocus="true" maxlength="2500" func="your-message"></textarea>
                 </div>
                 <div class="left-btns"></div>
                 <div class="right-btns" func="send-message">发送</div>
