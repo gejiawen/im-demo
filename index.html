@@ -9,14 +9,14 @@
 <body>
 <div class="im-wrapper">
     <div class="im-main-block clearfix">
-        <div class="brand">
+        <div class="brand" func="collapse-im">
             <div class="title fl">聊天<span class="badge">2</span></div>
             <div class="op fr"><i class="fa fa-angle-up fa-2x"></i></div>
         </div>
-        <div class="content collapse">
+        <div class="content">
             <div class="search hidden"></div>
             <div class="sessions">
-                <div class="session clearfix active">
+                <div class="session clearfix">
                     <div class="highlight"></div>
                     <div class="avatar fl">
                         <img src="images/avatar.png" alt="">
@@ -64,16 +64,16 @@
             </div>
         </div>
     </div>
-    <div class="im-msg-block">
+    <div class="im-chat-block hidden">
         <div class="brand">
             <div class="title fl">玩转组合</div>
             <div class="op fr">
-                <i class="fa fa-gear"></i>
-                <i class="fa fa-window-maximize"></i>
-                <i class="fa fa-close"></i>
+                <i class="fa fa-gear" func="setting-window" current="chat"></i>
+                <i class="fa fa-window-maximize" func="resize-chat"></i>
+                <i class="fa fa-close" func="close-chat"></i>
             </div>
         </div>
-        <div class="content">
+        <div class="content chat">
             <div class="messages">
 
             </div>
@@ -82,7 +82,23 @@
                     <textarea class="textarea" placeholder="请输入..."></textarea>
                 </div>
                 <div class="left-btns"></div>
-                <div class="right-btns">发送</div>
+                <div class="right-btns" func="send-message">发送</div>
+            </div>
+        </div>
+        <div class="content settings hidden">
+            <div class="setting" func="new-chat-alert" enable="0">
+                <i class="fa fa-square-o"></i>新消息提醒
+            </div>
+            <div class="setting" func="pin-chat" enable="0">
+                <i class="fa fa-square-o"></i>将对话置顶
+            </div>
+            <div class="blank-split"></div>
+            <div class="setting" func="clear-chat-history">
+                <i class="fa fa-trash"></i>清空聊天记录
+            </div>
+
+            <div class="go-back" func="go-back-chat">
+                <span>返回聊天</span>
             </div>
         </div>
     </div>
