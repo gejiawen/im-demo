@@ -124,6 +124,12 @@ $(function () {
                     props.$send.click()
                 }
 
+                if (!$(this).val()) {
+                    $(this).css({
+                        'height': 0
+                    });
+                }
+
                 var scrollHeight = ev.target.scrollHeight
                 console.log(scrollHeight)
 
