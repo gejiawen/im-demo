@@ -3,6 +3,11 @@
  * @author: gejiawen
  * @date: 12/01/2017 23:49
  * @description: index
+ *
+ * TODO
+ * 1. 消息轮询
+ * 2. 未读消息统计
+ *
  */
 
 $(function () {
