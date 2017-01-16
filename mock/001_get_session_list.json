@@ -1,0 +1,35 @@
+{
+    "code": 0,
+    "data": [
+        {
+            "account_id": "cccc",
+            "last_active_time": 1483864029723,
+            "nickname": "测试2",
+            "avatar": "http://www.invest.com/kaiy/holder/100x100&text=头像",
+            "unread_count": 0,
+            "last_message": {
+                "from_account_id": "aaa",
+                "to_account_id": "cccc",
+                "msg_id": "b271937698a698e469ae5622fd95f2bb",
+                "type": 1,
+                "content": "33333",
+                "timestamp": 1483864029723
+            }
+        },
+        {
+            "account_id": "bbb",
+            "last_active_time": 1483847836381,
+            "nickname": "测试1",
+            "avatar": "http://www.invest.com/kaiy/holder/100x100&text=头像",
+            "unread_count": 4,
+            "last_message": {
+                "from_account_id": "aaa",
+                "to_account_id": "bbb",
+                "msg_id": "b2bee211b73b941f022858b37bfb95f4",
+                "type": 1,
+                "content": "aaa222",
+                "timestamp": 1483847836381
+            }
+        }
+    ]
+}

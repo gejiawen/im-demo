@@ -1,0 +1,21 @@
+{
+    "code": 0,
+    "data": [
+        {
+            "from_account_id": "aaa",
+            "to_account_id": "cccc",
+            "msg_id": "b271937698a698e469ae5622fd95f2bb",
+            "type": 1,
+            "content": "33333",
+            "timestamp": 1483864029723
+        },
+        {
+            "from_account_id": "aaa",
+            "to_account_id": "cccc",
+            "msg_id": "acd8b34b254cd69921dce2b09a748cb5",
+            "type": 1,
+            "content": "aaa2223333",
+            "timestamp": 1483864025424
+        }
+    ]
+}

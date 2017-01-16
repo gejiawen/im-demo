@@ -6,6 +6,28 @@
  */
 
 $(function () {
+    var global = {
+        mock: true,
+        urls: {
+            online: {
+                get_session_list: '/?m=module_g_im.im.get_chat_list',
+                del_session: '/?m=module_g_im.im.delete_chat_item',
+                send_msg: '/?m=module_g_im.im.send_message',
+                get_session_history: '/?m=module_g_im.im.send_message',
+                poll_new_msg: '/?m=module_g_im.im.get_new_message',
+                search_user: '/?m=module_kaiy_account.ui_data.search_im_users'
+            },
+            offline: {
+                get_session_list: './mock/001_get_session_list.json',
+                del_session: './mock/002_del_session.json',
+                send_msg: './mock/003_send_msg.json',
+                get_session_history: './mock/004_get_session_history.json',
+                poll_new_msg: './mock/005_poll_new_msg.json',
+                search_user: './mock/006_search_user.json'
+            }
+        }
+    }
+
     var props = {
         $main: $('.im-main-block'),
         $chat: $('.im-chat-block'),
@@ -163,6 +185,12 @@ $(function () {
                 }
 
                 // TODO
+            })
+
+            props.$search.on('blur', function() {
+                $(this).val('')
+                $('.sessions.result').addClass('hidden')
+                $('.sessions.list').removeClass('hidden')
             })
 
 

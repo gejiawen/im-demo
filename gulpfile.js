@@ -12,7 +12,7 @@ const sourcemaps = require('gulp-sourcemaps')
 gulp.task('stylus-with-sourcemaps', () => {
     return gulp.src('./*.styl')
         .pipe(sourcemaps.init())
-        .pipe(stylus())
+        .pipe(stylus({compress: true}))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build'))
 })
