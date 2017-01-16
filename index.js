@@ -11,11 +11,11 @@ $(function () {
         urls: {
             online: {
                 get_session_list: '/?m=module_g_im.im.get_chat_list',
-                del_session: '/?m=module_g_im.im.delete_chat_item',
-                send_msg: '/?m=module_g_im.im.send_message',
-                get_session_history: '/?m=module_g_im.im.send_message',
-                poll_new_msg: '/?m=module_g_im.im.get_new_message',
-                search_user: '/?m=module_kaiy_account.ui_data.search_im_users'
+                del_session: '/?m=module_g_im.im.delete_chat_item&to_account_id={to_account_id}',
+                send_msg: '/?m=module_g_im.im.send_message&to_account_id={to_account_id}&content={content}',
+                get_session_history: '/?m=module_g_im.im.get_history_message&to_account_id={to_account_id}&page_size={page_size}&cursor={cursor}',
+                poll_new_msg: '/?m=module_g_im.im.get_new_message&to_account_id={to_account_id}',
+                search_user: '/?m=module_kaiy_account.ui_data.search_im_users&name={name}'
             },
             offline: {
                 get_session_list: './mock/001_get_session_list.json',
@@ -25,8 +25,43 @@ $(function () {
                 poll_new_msg: './mock/005_poll_new_msg.json',
                 search_user: './mock/006_search_user.json'
             }
+        },
+        parse: function(key, params) {
+            var urls = this.urls[this.mock ? 'offline' : 'online']
+
+            if (!urls[key]) {
+                alert('url key:' + url + ' do not match any rest api')
+                return;
+            } else {
+                return mock ? urls[key] : this.agency(urls[key], params)
+            }
+        },
+        agency: function(url, params) {
+            var reg = /\{([^\}]+)\}/g
+            var result
+
+            url = url.replace(reg, function (str, key) {
+                result = str;
+                if (key in params) {
+                    result = params[key]
+                } else {
+                    result = ''
+                }
+                return result
+            })
+
+            return url
         }
     }
+
+    function dispatcher(url, params, cb) {
+
+        $.ajax({
+            url: 
+        })
+    }
+
+
 
     var props = {
         $main: $('.im-main-block'),
