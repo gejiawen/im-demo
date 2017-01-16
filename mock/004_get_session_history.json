@@ -7,7 +7,9 @@
             "msg_id": "b271937698a698e469ae5622fd95f2bb",
             "type": 1,
             "content": "33333",
-            "timestamp": 1483864029723
+            "timestamp": 1483864029723,
+            "nickname": "AAA",
+            "avatar": "./images/customer.png"
         },
         {
             "from_account_id": "aaa",
@@ -15,7 +17,18 @@
             "msg_id": "acd8b34b254cd69921dce2b09a748cb5",
             "type": 1,
             "content": "aaa2223333",
-            "timestamp": 1483864025424
+            "timestamp": 1483864025424,
+            "nickname": "AAA",
+            "avatar": "./images/customer.png"
+        },
+        {
+            "from_account_id": "cccc",
+            "to_account_id": "aaa",
+            "msg_id": "acd8b34b254cd69921dce2b09a748cb4",
+            "type": 1,
+            "content": "yeah",
+            "timestamp": 1483864025424,
+            "avatar": "./images/me.png"
         }
     ]
 }

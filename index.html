@@ -18,70 +18,8 @@
                 <i class="fa fa-search"></i>
                 <input type="text" placeholder="搜索用户" func="search">
             </div>
-            <div class="sessions result hidden">
-                <div class="session clearfix">
-                    <div class="highlight"></div>
-                    <div class="avatar fl">
-                        <img src="images/avatar.png" alt="">
-                    </div>
-                    <div class="customer fl">
-                        <div class="name">隐藏用户</div>
-                        <div class="msg">我是隐藏用户被你搜到了</div>
-                    </div>
-                    <div class="stamp fr hidden">
-                        <div class="del">&times;</div>
-                        <div class="time">20:30</div>
-                        <div class="count">2</div>
-                    </div>
-                </div>
-            </div>
-            <div class="sessions list">
-                <div class="session clearfix">
-                    <div class="highlight"></div>
-                    <div class="avatar fl">
-                        <img src="images/avatar.png" alt="">
-                    </div>
-                    <div class="customer fl">
-                        <div class="name">玩转组合</div>
-                        <div class="msg">新手必读，分分钟怎么样怎么样分分钟怎么样怎么样</div>
-                    </div>
-                    <div class="stamp fr">
-                        <div class="del">&times;</div>
-                        <div class="time">20:30</div>
-                        <div class="count">2</div>
-                    </div>
-                </div>
-                <div class="session clearfix">
-                    <div class="highlight"></div>
-                    <div class="avatar fl">
-                        <img src="images/avatar.png" alt="">
-                    </div>
-                    <div class="customer fl">
-                        <div class="name">玩转组合</div>
-                        <div class="msg">新手必读，分分钟怎么样怎么样分分钟怎么样怎么样</div>
-                    </div>
-                    <div class="stamp fr">
-                        <div class="del">&times;</div>
-                        <div class="time">20:30</div>
-                        <div class="count">2</div>
-                    </div>
-                </div>
-                <div class="session clearfix">
-                    <div class="highlight"></div>
-                    <div class="avatar fl">
-                        <img src="images/avatar.png" alt="">
-                    </div>
-                    <div class="customer fl">
-                        <div class="name">玩转组合</div>
-                        <div class="msg">新手必读，分分钟怎么样怎么样分分钟怎么样怎么样</div>
-                    </div>
-                    <div class="stamp fr">
-                        <div class="del">&times;</div>
-                        <div class="time">20:30</div>
-                        <div class="count">2</div>
-                    </div>
-                </div>
-            </div>
+            <div class="sessions result hidden"></div>
+            <div class="sessions list"></div>
         </div>
     </div>
     <div class="im-chat-block hidden">
@@ -94,16 +32,7 @@
             </div>
         </div>
         <div class="content chat">
-            <div class="messages">
-                <div class="message clearfix customer">
-                    <div class="fl avatar" data-username="个股公告"><img src="images/customer.png" alt=""></div>
-                    <div class="fl content" data-stamp="19:46">以后将提醒你持仓产品的新公告。改为提醒全部自选产品，请发送QB给我。</div>
-                </div>
-                <div class="message clearfix me">
-                    <div class="fr avatar"><img src="images/me.png" alt=""></div>
-                    <div class="fr content" data-stamp="19:47">好的，我知道了。</div>
-                </div>
-            </div>
+            <div class="messages"></div>
             <div class="input-wrapper">
                 <div class="editor">
                     <textarea class="textarea" placeholder="请输入..." autofocus="true" maxlength="2500" func="your-message"></textarea>
@@ -132,23 +61,56 @@
 </div>
 
 <script type="x-template" id="session">
-    <%_.forEach(sessions, function(session) {%>
-        <div class="session clearfix">
+    <% _.forEach(sessions, function(session) { %>
+        <div class="session clearfix" account-id="<%- session.account_id %>" from-account-id="<%- session.last_message.from_account_id %>" to-account-id="<%- session.last_message.to_account_id %>">
             <div class="highlight"></div>
             <div class="avatar fl">
-                <img src="images/avatar.png" alt="">
+                <img src="<%- session.avatar %>" alt="我是头像">
             </div>
             <div class="customer fl">
-                <div class="name">隐藏用户</div>
-                <div class="msg">我是隐藏用户被你搜到了</div>
+                <div class="name"><%- session.nickname %></div>
+                <div class="msg"><%- session.last_message.content %></div>
             </div>
-            <div class="stamp fr hidden">
+            <div class="stamp fr">
                 <div class="del">&times;</div>
-                <div class="time">20:30</div>
-                <div class="count">2</div>
+                <div class="time"><%- filters.timeFormat(session.last_message.timestamp) %></div>
+                <% if (session.unread_count) { %>
+                    <div class="count"><%- session.unread_count %></div>
+                <% } %>
             </div>
         </div>
-    <%})%>
+    <% }) %>
+</script>
+
+<script type="x-template" id="result">
+    <% _.forEach(results, function(result) { %>
+        <div class="session clearfix" account-id="<%- result.account_id %>">
+            <div class="highlight"></div>
+            <div class="avatar fl">
+                <img src="<%- result.avatar %>" alt="我是头像">
+            </div>
+            <div class="customer fl">
+                <div class="name"><%- result.nickname %></div>
+                <div class="msg"><%- result.introduce %></div>
+            </div>
+        </div>
+    <% }) %>
+</script>
+
+<script type="x-template" id="message">
+    <% _.forEach(messages, function(msg) { %>
+        <% if (msg.from_account_id === from_account_id) { %>
+            <div class="message clearfix customer" msg-id="<%- msg.msg_id %>">
+                <div class="fl avatar" data-username="<%- msg.nickname %>"><img src="<%- msg.avatar %>" alt="头像"></div>
+                <div class="fl content" data-stamp="<%- filters.timeFormat(msg.timestamp) %>"><%- msg.content %></div>
+            </div>
+        <% } else { %>
+            <div class="message clearfix me" msg-id="<%- msg.msg_id %>">
+                <div class="fr avatar"><img src="<%- msg.avatar %>" alt="头像"></div>
+                <div class="fr content" data-stamp="<%- filters.timeFormat(msg.timestamp) %>"><%- msg.content %></div>
+            </div>
+        <% } %>
+    <% }) %>
 </script>
 
 <script src="lib/jquery.min.js"></script>

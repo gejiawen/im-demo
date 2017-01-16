@@ -11,11 +11,11 @@ $(function () {
         urls: {
             online: {
                 get_session_list: '/?m=module_g_im.im.get_chat_list',
-                del_session: '/?m=module_g_im.im.delete_chat_item&to_account_id={to_account_id}',
-                send_msg: '/?m=module_g_im.im.send_message&to_account_id={to_account_id}&content={content}',
-                get_session_history: '/?m=module_g_im.im.get_history_message&to_account_id={to_account_id}&page_size={page_size}&cursor={cursor}',
-                poll_new_msg: '/?m=module_g_im.im.get_new_message&to_account_id={to_account_id}',
-                search_user: '/?m=module_kaiy_account.ui_data.search_im_users&name={name}'
+                del_session: '/?m=module_g_im.im.delete_chat_item',
+                send_msg: '/?m=module_g_im.im.send_message',
+                get_session_history: '/?m=module_g_im.im.get_history_message',
+                poll_new_msg: '/?m=module_g_im.im.get_new_message',
+                search_user: '/?m=module_kaiy_account.ui_data.search_im_users'
             },
             offline: {
                 get_session_list: './mock/001_get_session_list.json',
@@ -26,17 +26,18 @@ $(function () {
                 search_user: './mock/006_search_user.json'
             }
         },
-        parse: function(key, params) {
+        parse: function (key) {
             var urls = this.urls[this.mock ? 'offline' : 'online']
 
             if (!urls[key]) {
                 alert('url key:' + url + ' do not match any rest api')
                 return;
             } else {
-                return mock ? urls[key] : this.agency(urls[key], params)
+                // return mock ? urls[key] : this.agency(urls[key], params)
+                return urls[key]
             }
         },
-        agency: function(url, params) {
+        agency: function (url, params) {
             var reg = /\{([^\}]+)\}/g
             var result
 
@@ -54,25 +55,54 @@ $(function () {
         }
     }
 
-    function dispatcher(url, params, cb) {
-
-        $.ajax({
-            url: 
-        })
+    var template = {
+        get: function (id) {
+            return $('#' + id).html()
+        },
+        compile: function (id, data) {
+            var compiled = _.template(this.get(id))
+            return compiled(data)
+        },
+        filters: {
+            timeFormat: function (timestamp) {
+                var d = new Date(timestamp)
+                return d.toTimeString().slice(0, 5)
+            }
+        }
     }
 
 
+    function dispatcher(url, params, cb) {
+        $.ajax({
+            type: 'GET',
+            url: global.parse(url),
+            data: params,
+            dataType: 'json',
+            success: function (rtn) {
+                if (rtn && rtn.code === 0) {
+                    cb && cb(rtn.data)
+                } else {
+                    console.log(rtn)
+                }
+            },
+            error: function (xhr, type) {
+                alert('ajax error')
+                console.log(xhr, type)
+            }
+        })
+    }
 
     var props = {
         $main: $('.im-main-block'),
         $chat: $('.im-chat-block'),
-        $sessions: $('.im-main-block .sessions.list'),
+        $sessionsBlock: $('.im-main-block .sessions.list'),
+        $resultBlock: $('.im-main-block .sessions.result'),
         $session: $('.im-main-block .session'),
 
         $chatContent: $('.im-chat-block .content.chat'),
         $settingsContent: $('.im-chat-block .content.settings'),
 
-        $messages: $('.im-chat-block .content.chat .messages'),
+        $messagesBlock: $('.im-chat-block .content.chat .messages'),
 
         $collapseIM: $('[func="collapse-im"]'),
 
@@ -94,17 +124,101 @@ $(function () {
 
     var methods = {
         init: function () {
+            this.static_listener()
+
+            // init ajax request
+            this.request.getSessionList()
+        },
+        request: {
+            getSessionList: function() {
+                dispatcher('get_session_list', {}, function (data) {
+                    var tpl = template.compile('session', {
+                        sessions: data,
+                        filters: template.filters
+                    })
+                    props.$sessionsBlock.empty().append(tpl)
+                    methods.dynamic_listener()
+                })
+            },
+            getSearchResult: function(name) {
+                dispatcher('search_user', {
+                    name: name
+                }, function(data) {
+                    var tpl = template.compile('result', {
+                        results: data,
+                        filters: template.filters
+                    })
+                    props.$resultBlock.empty().append(tpl)
+                    methods.search_user_listener()
+                })
+            },
+            getSessionHistory: function(from_account_id, to_account_id) {
+                dispatcher('get_session_history', {
+                    to_account_id: to_account_id
+                }, function(data) {
+                    var tpl = template.compile('message', {
+                        messages: data,
+                        filters: template.filters,
+                        from_account_id: from_account_id,
+                        to_account_id: to_account_id
+                    })
+                    props.$messagesBlock.empty().append(tpl)
+                })
+            },
+            sendMsg: function(to_account_id, content, cb) {
+                    dispatcher('send_msg', {
+                        to_account_id: to_account_id,
+                        content: content
+                    }, function(data) {
+                        methods.genMe(data)
+                        cb()
+                    })
+            }
+        },
+        dynamic_listener: function() {
+            // 从会话列表打开某一个聊天窗口
+            props.$session = $('.im-main-block .list .session')
+            props.$session.on('click', function () {
+                props.$messagesBlock.empty()
+                methods.showChat(true)
+                $(this).addClass('active')
+                $(this).find('.count').html('0').addClass('hidden')
+
+                var from_account_id = $(this).attr('from-account-id')
+                var to_account_id = $(this).attr('to-account-id')
+                props.$chatContent.attr('to-account-id', to_account_id)
+
+                methods.request.getSessionHistory(from_account_id, to_account_id)
+
+                // TODO
+                // 轮询消息，检查堆放是否发送消息
+                // 轮询到的消息是增量的，在原有的message列表中append即可
+            })
+        },
+        search_user_listener: function() {
+            // 从搜索结果中打开某一个聊天窗口
+            props.$session = $('.im-main-block .result .session')
+            props.$session.on('click', function () {
+                props.$messagesBlock.empty()
+                methods.showChat(true)
+                $(this).addClass('active')
+                $(this).find('.count').html('0').addClass('hidden')
+
+                // var from_account_id = $(this).attr('from-account-id')
+                var to_account_id = $(this).attr('account-id')
+                props.$chatContent.attr('to-account-id', to_account_id)
+
+                // methods.request.getSessionHistory(from_account_id, to_account_id)
+            })
+        },
+        static_listener: function () {
+            // 会话列表展开、闭合
             props.$collapseIM.on('click', function () {
                 methods.collapse()
                 methods.showChat(false)
             })
 
-            props.$session.on('click', function () {
-                methods.showChat(true)
-                $(this).addClass('active')
-                $(this).find('.count').html('0').addClass('hidden')
-            })
-
+            // 切换至聊天设置界面
             props.$settingWindow.on('click', function () {
                 var current = $(this).attr('current')
                 if (current === 'chat') {
@@ -116,14 +230,17 @@ $(function () {
                 }
             })
 
+            // 切换聊天窗口的最大化、常态
             props.$resizeChat.on('click', function () {
-
+                // TODO
             })
 
+            // 关闭聊天窗口
             props.$closeChat.on('click', function () {
                 methods.showChat(false)
             })
 
+            // 聊天窗口设置：“新消息提醒”开关
             props.$newChatAlert.on('click', function () {
                 var enable = $(this).attr('enable')
 
@@ -139,6 +256,7 @@ $(function () {
                 }
             })
 
+            // 聊天窗口设置：“置顶聊天”开关
             props.$pinChat.on('click', function () {
                 var enable = $(this).attr('enable')
 
@@ -154,16 +272,19 @@ $(function () {
                 }
             })
 
+            // 聊天窗口设置：“清空聊天记录”动作
             props.$clearChatHistory.on('click', function () {
                 if (window.confirm('你确定要清空此对话的聊天记录吗？')) {
                     // TODO
                 }
             })
 
+            // 从设置界面返回至聊天界面
             props.$goBackChat.on('click', function () {
                 props.$settingWindow.click()
             })
 
+            // 发送消息
             props.$send.on('click', function () {
                 var msg = props.$yourMessage.val()
 
@@ -171,13 +292,21 @@ $(function () {
                     return
                 }
 
-                methods.genMe(msg)
+                methods.request.sendMsg(props.$chatContent.attr('to-account-id'), msg, function() {
+                    // props.$yourMessage.val('')
+                    // props.$yourMessage.css({
+                    //     'height': 0
+                    // });
+                })
+
                 props.$yourMessage.val('')
                 props.$yourMessage.css({
                     'height': 0
                 });
             })
 
+            // 聊天消息输入监控
+            // 主要是为了适配输入框的高度变化
             props.$yourMessage.on('keyup', function (ev) {
                 if (ev.keyCode === 13) {
                     props.$send.click()
@@ -190,8 +319,6 @@ $(function () {
                 }
 
                 var scrollHeight = ev.target.scrollHeight
-                console.log(scrollHeight)
-
                 if (scrollHeight > 20) {
 
                     $(this).css({
@@ -208,27 +335,26 @@ $(function () {
                 }
             })
 
+            // 搜索框事件监控
             props.$search.on('input', function () {
                 var val = $(this).val()
 
-                if (!val) {
-                    $('.sessions.result').addClass('hidden')
-                    $('.sessions.list').removeClass('hidden')
+                methods.toggleSession(!val, val)
+            })
+
+            // 搜索框失去焦点，自动返回会话列表界面
+            props.$search.on('blur', function () {
+                var val = $(this).val()
+                var length = props.$resultBlock.children().length
+
+                if (val && length) {
+                    // TODO
+                    // 打开聊天窗口，与搜索到的用户开始聊天
                 } else {
-                    $('.sessions.result').removeClass('hidden')
-                    $('.sessions.list').addClass('hidden')
+                    $(this).val('')
+                    methods.toggleSession(true)
                 }
-
-                // TODO
             })
-
-            props.$search.on('blur', function() {
-                $(this).val('')
-                $('.sessions.result').addClass('hidden')
-                $('.sessions.list').removeClass('hidden')
-            })
-
-
         },
         collapse: function () {
             var $brand = props.$main.find('.brand .fa')
@@ -243,7 +369,7 @@ $(function () {
             }
         },
         showChat: function (show) {
-            props.$sessions.find('.active').removeClass('active')
+            props.$sessionsBlock.find('.active').removeClass('active')
             methods.toggleChat('chat')
             if (show) {
                 props.$chat.removeClass('hidden')
@@ -252,6 +378,17 @@ $(function () {
             }
 
             // TODO
+        },
+        toggleSession: function(flag, input) {
+            if (flag) {
+                props.$sessionsBlock.removeClass('hidden')
+                props.$resultBlock.addClass('hidden')
+                this.request.getSessionList()
+            } else {
+                props.$sessionsBlock.addClass('hidden')
+                props.$resultBlock.removeClass('hidden')
+                this.request.getSearchResult(input)
+            }
         },
         toggleChat: function (flag) {
             props.$settingWindow.attr('current', flag)
@@ -265,33 +402,29 @@ $(function () {
                 props.$settingsContent.removeClass('hidden')
             }
         },
-        genCustomer: function () {
+        genCustomer: function (data) {
             var markup =
-                '<div class="message clearfix customer">' +
+                '<div class="message clearfix customermsg-id="' + data.msg_id + '">' +
                     '<div class="fl avatar" data-username="个股公告"><img src="images/customer.png" alt=""></div>' +
                     '<div class="fl content" data-stamp="19:46">以后将提醒你持仓产品的新公告。改为提醒全部自选产品，请发送QB给我。</div>' +
                 '</div>'
 
-            props.$messages.append($(markup))
+            props.$messagesBlock.append($(markup))
             methods.scroll2Bottom()
         },
-        genMe: function (msg) {
+        genMe: function (data) {
+            var time = template.filters.timeFormat(data.timestamp)
             var markup =
-                '<div class="message clearfix me">' +
-                    '<div class="fr avatar"><img src="images/me.png" alt=""></div>' +
-                    '<div class="fr content" data-stamp="19:47">' + msg + '</div>' +
+                '<div class="message clearfix me" msg-id="' + data.msg_id + '">' +
+                    '<div class="fr avatar"><img src="' + data.avatar + '" alt="头像"></div>' +
+                    '<div class="fr content" data-stamp="' + time + '">' + data.content + '</div>' +
                 '</div>'
 
-            props.$messages.append($(markup))
+            props.$messagesBlock.append($(markup))
             methods.scroll2Bottom()
         },
         scroll2Bottom: function () {
-            props.$messages.scrollTop(props.$messages.height())
-        },
-
-
-        utils: {
-
+            props.$messagesBlock.scrollTop(props.$messagesBlock.height())
         }
     }
 

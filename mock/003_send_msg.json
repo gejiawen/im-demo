@@ -6,6 +6,7 @@
         "msg_id": "711dc528ea7f8ceef6029db3dabaac9f",
         "type": 1,
         "content": "33333",
-        "timestamp": 1483869518515
+        "timestamp": 1483869518515,
+        "avatar": "./images/me.png"
     }
 }
