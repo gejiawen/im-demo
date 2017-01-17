@@ -4,15 +4,13 @@
  * @date: 12/01/2017 23:49
  * @description: index
  *
- * TODO
- * 1. 消息轮询
- * 2. 未读消息统计
- *
  */
 
 $(function () {
     var global = {
+        ticket: null,
         mock: true,
+        prefix: 'http://127.0.0.1:8080',
         urls: {
             online: {
                 get_session_list: '/?m=module_g_im.im.get_chat_list',
@@ -23,12 +21,12 @@ $(function () {
                 search_user: '/?m=module_kaiy_account.ui_data.search_im_users'
             },
             offline: {
-                get_session_list: './mock/001_get_session_list.json',
-                del_session: './mock/002_del_session.json',
-                send_msg: './mock/003_send_msg.json',
-                get_session_history: './mock/004_get_session_history.json',
-                poll_new_msg: './mock/005_poll_new_msg.json',
-                search_user: './mock/006_search_user.json'
+                get_session_list: '/mock/001_get_session_list.json',
+                del_session: '/mock/002_del_session.json',
+                send_msg: '/mock/003_send_msg.json',
+                get_session_history: '/mock/004_get_session_history.json',
+                poll_new_msg: '/mock/005_poll_new_msg.json',
+                search_user: '/mock/006_search_user.json'
             }
         },
         parse: function (key) {
@@ -39,7 +37,7 @@ $(function () {
                 return;
             } else {
                 // return mock ? urls[key] : this.agency(urls[key], params)
-                return urls[key]
+                return this.prefix + urls[key]
             }
         },
         agency: function (url, params) {
@@ -57,6 +55,9 @@ $(function () {
             })
 
             return url
+        },
+        poll: function () {
+
         }
     }
 
@@ -85,7 +86,7 @@ $(function () {
             dataType: 'json',
             success: function (rtn) {
                 if (rtn && rtn.code === 0) {
-                    cb && cb(rtn.data)
+                    cb && cb(rtn.data, rtn.code)
                 } else {
                     console.log(rtn)
                 }
@@ -107,7 +108,7 @@ $(function () {
         $chatContent: $('.im-chat-block .content.chat'),
         $settingsContent: $('.im-chat-block .content.settings'),
 
-        $messagesBlock: $('.im-chat-block .content.chat .messages'),
+        $messagesBlock: $('.im-chat-block .content.chat .messages .message-wraaper'),
 
         $collapseIM: $('[func="collapse-im"]'),
 
@@ -124,7 +125,8 @@ $(function () {
         $search: $('[func="search"]'),
 
         $yourMessage: $('[func="your-message"]'),
-        $send: $('[func="send-message"]')
+        $send: $('[func="send-message"]'),
+        $badge: $('.im-main-block .brand .badge')
     }
 
     var methods = {
@@ -135,7 +137,7 @@ $(function () {
             this.request.getSessionList()
         },
         request: {
-            getSessionList: function() {
+            getSessionList: function () {
                 dispatcher('get_session_list', {}, function (data) {
                     var tpl = template.compile('session', {
                         sessions: data,
@@ -143,12 +145,13 @@ $(function () {
                     })
                     props.$sessionsBlock.empty().append(tpl)
                     methods.dynamic_listener()
+                    methods.updateUnreadCount(data)
                 })
             },
-            getSearchResult: function(name) {
+            getSearchResult: function (name) {
                 dispatcher('search_user', {
                     name: name
-                }, function(data) {
+                }, function (data) {
                     var tpl = template.compile('result', {
                         results: data,
                         filters: template.filters
@@ -157,10 +160,10 @@ $(function () {
                     methods.search_user_listener()
                 })
             },
-            getSessionHistory: function(from_account_id, to_account_id) {
+            getSessionHistory: function (from_account_id, to_account_id) {
                 dispatcher('get_session_history', {
                     to_account_id: to_account_id
-                }, function(data) {
+                }, function (data) {
                     var tpl = template.compile('message', {
                         messages: data,
                         filters: template.filters,
@@ -168,25 +171,48 @@ $(function () {
                         to_account_id: to_account_id
                     })
                     props.$messagesBlock.empty().append(tpl)
+
+                    // 轮询当前聊天对话是否有新消息
+                    global.ticket = setInterval(function () {
+                        dispatcher('poll_new_msg', {
+                            to_account_id: to_account_id
+                        }, function (data) {
+                            methods.genCustomer(data)
+                        })
+                    }, 4000)
                 })
             },
-            sendMsg: function(to_account_id, content, cb) {
-                    dispatcher('send_msg', {
-                        to_account_id: to_account_id,
-                        content: content
-                    }, function(data) {
-                        methods.genMe(data)
-                        cb()
-                    })
+            sendMsg: function (to_account_id, content, cb) {
+                dispatcher('send_msg', {
+                    to_account_id: to_account_id,
+                    content: content
+                }, function (data) {
+                    methods.genMe(data)
+                    cb && cb()
+                })
             }
         },
-        dynamic_listener: function() {
+        dynamic_listener: function () {
             // 从会话列表打开某一个聊天窗口
             props.$session = $('.im-main-block .list .session')
             props.$session.on('click', function () {
+                var nickname = $(this).find('.name').html()
+                $('.im-chat-block .title').html(nickname)
+
+                clearTimeout(global.ticket)
                 props.$messagesBlock.empty()
                 methods.showChat(true)
                 $(this).addClass('active')
+
+                var count = $(this).find('.count').html()
+                var total = parseInt(props.$badge.html()) - parseInt(count)
+
+                if (total === 0) {
+                    props.$badge.hide()
+                } else {
+                    props.$badge.html(total)
+                }
+
                 $(this).find('.count').html('0').addClass('hidden')
 
                 var from_account_id = $(this).attr('from-account-id')
@@ -194,16 +220,37 @@ $(function () {
                 props.$chatContent.attr('to-account-id', to_account_id)
 
                 methods.request.getSessionHistory(from_account_id, to_account_id)
+            })
 
-                // TODO
-                // 轮询消息，检查堆放是否发送消息
-                // 轮询到的消息是增量的，在原有的message列表中append即可
+            props.$session.find('[func="del-session"]').on('click', function (ev) {
+                ev.preventDefault()
+                ev.stopPropagation()
+
+                methods.showChat(false)
+                clearInterval(global.ticket)
+
+                if (!confirm('确定要删除此次对话吗？')) {
+                    return
+                }
+
+                var to_account_id = $(this).attr('account-id')
+                dispatcher('del_session', {
+                    to_account_id: to_account_id
+                }, function (data, code) {
+                    if (code === 0) {
+                        $('#session-id-' + to_account_id).remove()
+                    }
+                })
             })
         },
-        search_user_listener: function() {
+        search_user_listener: function () {
             // 从搜索结果中打开某一个聊天窗口
             props.$session = $('.im-main-block .result .session')
             props.$session.on('click', function () {
+                clearTimeout(global.ticket)
+                var nickname = $(this).find('.name').html()
+                $('.im-chat-block .title').html(nickname)
+
                 props.$messagesBlock.empty()
                 methods.showChat(true)
                 $(this).addClass('active')
@@ -243,6 +290,7 @@ $(function () {
             // 关闭聊天窗口
             props.$closeChat.on('click', function () {
                 methods.showChat(false)
+                clearInterval(global.ticket)
             })
 
             // 聊天窗口设置：“新消息提醒”开关
@@ -297,7 +345,7 @@ $(function () {
                     return
                 }
 
-                methods.request.sendMsg(props.$chatContent.attr('to-account-id'), msg, function() {
+                methods.request.sendMsg(props.$chatContent.attr('to-account-id'), msg, function () {
                     // props.$yourMessage.val('')
                     // props.$yourMessage.css({
                     //     'height': 0
@@ -361,6 +409,13 @@ $(function () {
                 }
             })
         },
+        updateUnreadCount: function (data) {
+            var total = 0
+            for (var i = 0; i < data.length; i++) {
+                total += data[i].unread_count
+            }
+            props.$badge.html(total)
+        },
         collapse: function () {
             var $brand = props.$main.find('.brand .fa')
             var $content = props.$main.find('.content')
@@ -384,7 +439,7 @@ $(function () {
 
             // TODO
         },
-        toggleSession: function(flag, input) {
+        toggleSession: function (flag, input) {
             if (flag) {
                 props.$sessionsBlock.removeClass('hidden')
                 props.$resultBlock.addClass('hidden')
@@ -408,11 +463,19 @@ $(function () {
             }
         },
         genCustomer: function (data) {
-            var markup =
-                '<div class="message clearfix customermsg-id="' + data.msg_id + '">' +
-                    '<div class="fl avatar" data-username="个股公告"><img src="images/customer.png" alt=""></div>' +
-                    '<div class="fl content" data-stamp="19:46">以后将提醒你持仓产品的新公告。改为提醒全部自选产品，请发送QB给我。</div>' +
-                '</div>'
+            var markup = ''
+            for (var i = 0; i < data.length; i++) {
+                markup +=
+                    '<div class="message clearfix customer" msg-id="' + data[i].msg_id + '">' +
+                        '<div class="fl avatar" data-username="' + data[i].nickname + '"><img src="' + data[i].avatar + '" alt="头像"></div>' +
+                        '<div class="fl content" data-stamp="' + template.filters.timeFormat(data[i].timestamp) + '">' + data[i].content + '</div>' +
+                    '</div>'
+            }
+            // var markup =
+            //     '<div class="message clearfix customer" msg-id="' + data.msg_id + '">' +
+            //         '<div class="fl avatar" data-username="' + data.nickname + '"><img src="' + data.avatar + '" alt="头像"></div>' +
+            //         '<div class="fl content" data-stamp="' + template.filters.timeFormat(data.timestamp) + '">' + data.content + '</div>' +
+            //     '</div>'
 
             props.$messagesBlock.append($(markup))
             methods.scroll2Bottom()
@@ -429,9 +492,10 @@ $(function () {
             methods.scroll2Bottom()
         },
         scroll2Bottom: function () {
-            props.$messagesBlock.scrollTop(props.$messagesBlock.height())
+            $('.im-chat-block .content.chat .messages').scrollTop(props.$messagesBlock.height())
         }
     }
 
+    // init
     methods.init()
 })

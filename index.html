@@ -10,7 +10,7 @@
 <div class="im-wrapper">
     <div class="im-main-block clearfix">
         <div class="brand" func="collapse-im">
-            <div class="title fl">聊天<span class="badge">2</span></div>
+            <div class="title fl">聊天<span class="badge">**</span></div>
             <div class="op fr"><i class="fa fa-angle-up fa-2x"></i></div>
         </div>
         <div class="content">
@@ -24,7 +24,7 @@
     </div>
     <div class="im-chat-block hidden">
         <div class="brand">
-            <div class="title fl">玩转组合</div>
+            <div class="title fl">**</div>
             <div class="op fr">
                 <i class="fa fa-gear" func="setting-window" current="chat"></i>
                 <i class="fa fa-window-maximize" func="resize-chat"></i>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="content chat">
-            <div class="messages"></div>
+            <div class="messages"><div class="message-wraaper"></div></div>
             <div class="input-wrapper">
                 <div class="editor">
                     <textarea class="textarea" placeholder="请输入..." autofocus="true" maxlength="2500" func="your-message"></textarea>
@@ -62,7 +62,7 @@
 
 <script type="x-template" id="session">
     <% _.forEach(sessions, function(session) { %>
-        <div class="session clearfix" account-id="<%- session.account_id %>" from-account-id="<%- session.last_message.from_account_id %>" to-account-id="<%- session.last_message.to_account_id %>">
+        <div class="session clearfix" id="session-id-<%- session.account_id %>" account-id="<%- session.account_id %>" from-account-id="<%- session.last_message.from_account_id %>" to-account-id="<%- session.last_message.to_account_id %>">
             <div class="highlight"></div>
             <div class="avatar fl">
                 <img src="<%- session.avatar %>" alt="我是头像">
@@ -72,7 +72,7 @@
                 <div class="msg"><%- session.last_message.content %></div>
             </div>
             <div class="stamp fr">
-                <div class="del">&times;</div>
+                <div class="del" func="del-session" account-id="<%- session.account_id %>">&times;</div>
                 <div class="time"><%- filters.timeFormat(session.last_message.timestamp) %></div>
                 <% if (session.unread_count) { %>
                     <div class="count"><%- session.unread_count %></div>
