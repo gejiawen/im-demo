@@ -177,7 +177,9 @@ $(function () {
                         dispatcher('poll_new_msg', {
                             to_account_id: to_account_id
                         }, function (data) {
-                            methods.genCustomer(data)
+                            if (data.length) {
+                                methods.genCustomer(data)
+                            }
                         })
                     }, 4000)
                 })
@@ -284,7 +286,12 @@ $(function () {
 
             // 切换聊天窗口的最大化、常态
             props.$resizeChat.on('click', function () {
-                // TODO
+                var $dom = $('.im-chat-block')
+                if ($dom.hasClass('resize')) {
+                    $dom.removeClass('resize')
+                } else {
+                    $dom.addClass('resize')
+                }
             })
 
             // 关闭聊天窗口

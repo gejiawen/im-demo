@@ -32,429 +32,439 @@
     }
 }
 
-// im
-.im-wrapper {
+.im-main-block {
     position: fixed
     bottom: 0
     right: 0
 
-    .im-main-block {
-        .brand {
-            width: 260px
-            height: 40px
-            line-height: 40px
-            background-color: #05A
-            color: #FFF
-            cursor: pointer
+    .brand {
+        width: 260px
+        height: 40px
+        line-height: 40px
+        background-color: #05A
+        color: #FFF
+        cursor: pointer
 
-            &:hover {
-                .op .fa {
-                    color: #FFF
-                }
-            }
-
-            .title {
-                margin-left: 10px
-
-                .badge {
-                    display: inline-block
-                    width: 20px
-                    height: 20px
-                    background-color: #FA0
-                    line-height: 1.5
-                    text-align: center
-                    margin-left: 5px
-                    border-radius: 100%
-                }
-            }
-
-            .op {
-                margin-right: 10px
-
-                .fa {
-                    position: relative
-                    top: 3px
-                    color: #CCC
-                }
+        &:hover {
+            .op .fa {
+                color: #FFF
             }
         }
 
-        .content {
-            background-color: #FFF
-            transition: height .6s ease-out
-            border-left: 1px solid #CCC
-            height: 0
-            overflow-y: auto
+        .title {
+            margin-left: 10px
 
-            &.collapse {
-                height: 440px
+            .badge {
+                display: inline-block
+                width: 20px
+                height: 20px
+                background-color: #FA0
+                line-height: 1.5
+                text-align: center
+                margin-left: 5px
+                border-radius: 100%
             }
+        }
 
-            .search {
-                cursor: text
-                height: 44px
-                border-bottom: 1px solid #DDD
-                box-sizing: border-box
-                background-color: #FFF
+        .op {
+            margin-right: 10px
+
+            .fa {
                 position: relative
-
-                .fa {
-                    color: #AAA
-                    position: absolute
-                    font-size: 20px
-                    top: 10px
-                    left: 6px
-                }
-
-                input {
-                    border: 0
-                    width: 100%
-                    height: 100%
-                    outline: 0
-                    font-size: 16px
-                    text-indent: 30px
-                    color: #444
-                }
-            }
-
-            .sessions {
-                .session {
-                    border-bottom: 1px solid #EEE
-                    height: 65px
-                //padding: 0 10px
-                    position: relative
-                    cursor: pointer
-
-                    &.active {
-                        background-color: #EFEFEF
-                        .highlight {
-                            display: block
-                        }
-
-                        .stamp {
-                            .del {
-                                display: block
-                            }
-                        }
-                    }
-
-                    &:hover {
-                        background-color: #EFEFEF
-                        .stamp {
-                            .del {
-                                display: block
-                            }
-                        }
-                    }
-
-                    .highlight {
-                        display: none
-                        position: absolute
-                        height: 100%
-                        width: 4px
-                        background: #00A0E9
-                        left: 0
-                    }
-                    .avatar {
-                        height: 100%
-                        img {
-                            height: 50px
-                            width: 50px
-                            padding: 8px
-                        }
-                    }
-                    .customer {
-                        width: 140px
-                        height: 100%
-                        .name {
-                            color: #444
-                            margin: 6px 0 12px 0
-                            max-width: 135px
-                            overflow: hidden
-                            text-overflow: ellipsis
-                            white-space: nowrap
-                        }
-                        .msg {
-                            color: #999
-                            max-width: 135px
-                            overflow: hidden
-                            text-overflow: ellipsis
-                            white-space: nowrap
-                        //display: inline-block
-                        }
-                    }
-                    .stamp {
-                        width: 50px
-                        height: 100%
-                        position: relative
-
-                        & > div {
-                            position: absolute
-                        }
-
-                        .del {
-                            display: none
-                            top: 3px
-                            right: 3px
-                            font-size: 18px
-                            line-height: 0.8
-                            color: rgba(0, 0, 0, 0.4)
-                            cursor: pointer
-
-                            &:hover {
-                                color: rgba(0, 0, 0, 1)
-                            }
-                        }
-                        .time {
-                            top: 8px
-                            right: 20px
-                            color: #BBB
-                            font-size: 13px
-                        }
-                        .count {
-                            top: 36px
-                            right: 20px
-                            font-size: 11px
-                            font-family: arial
-                            color: #FFF
-                            padding: 4px 6px 3px
-                            background-color: #FA0
-                            border-radius: 10px
-                        }
-                    }
-                }
+                top: 3px
+                color: #CCC
             }
         }
     }
 
-    .im-chat-block {
-        position: absolute
-        width: 380px
-        bottom: 0
-        right: 280px
+    .content {
+        background-color: #FFF
+        transition: height .6s ease-out
+        border-left: 1px solid #CCC
+        height: 0
+        overflow-y: auto
 
-        .brand {
-            width: 100%
-            height: 40px
-            line-height: 40px
-            background-color: #05A
-            color: #FFF
-            cursor: pointer
+        &.collapse {
+            height: 440px
+        }
 
-            .title {
-                margin-left: 10px
+        .search {
+            cursor: text
+            height: 44px
+            border-bottom: 1px solid #DDD
+            box-sizing: border-box
+            background-color: #FFF
+            position: relative
+
+            .fa {
+                color: #AAA
+                position: absolute
+                font-size: 20px
+                top: 10px
+                left: 6px
             }
 
-            .op {
-                margin-right: 10px
-                color: #CCC
-
-                .fa {
-                    position: relative
-                    top: 2px
-                    margin-left: 5px
-                    font-size: 20px
-
-                    &:hover {
-                        color: #FFF
-                    }
-                }
+            input {
+                border: 0
+                width: 100%
+                height: 100%
+                outline: 0
+                font-size: 16px
+                text-indent: 30px
+                color: #444
             }
         }
 
-        & > .content {
-            border-right: 1px solid #CCC
-            border-bottom: 1px solid #CCC
-            border-left: 1px solid #CCC
-            height: 350px
-            position: relative
-            background-color: #F8F8F8
-
-            &.chat {
-                .messages {
-                    position: absolute
-                    top: 0
-                    right: 0
-                    bottom: 37px
-                    left: 0
-                    overflow-y: auto
-
-
-                    .message {
-                        position: relative
-                        margin: 20px 10px
-
-                        .avatar {
-                            position: relative
-                            img {
-                                width: 32px
-                                height: 32px
-                                border-radius: 3px
-                            }
-                            &::after {
-                                content: attr(data-username)
-                                position: absolute
-                                font-size: 12px
-                                color: #BBB
-                                top: 0
-                                left: 40px
-                                white-space: nowrap
-                            }
-                        }
-
-                        .content {
-                            max-width: 260px
-                            margin: 20px 0 0 10px
-                            position: relative
-                            line-height: 18px
-                            color: #444
-                            font-size: 14px
-                            padding: 7px 8px
-                            margin-left: 7px
-                            border-radius: 3px
-                            background-color: #FFF
-                            box-shadow: -1px 1px 1px #DDD
-                            word-wrap: break-word
-                            display: inline-block
-
-                            &::after {
-                                content: attr(data-stamp)
-                                white-space: nowrap
-                                position: absolute
-                                right: -30px
-                                bottom: 0
-                                color: #AAA
-                                font-size: 10px
-                            }
-                        }
-
-                        &.customer {
-
-                        }
-
-                        &.me {
-                            .content {
-                                margin: 0 10px 0 0
-                                &::after {
-                                    left: -30px
-                                    right: auto
-                                }
-                            }
-                        }
-                    }
-                }
-
-                .input-wrapper {
-                    position: absolute
-                    bottom: 0
-                    left: 0
-                    right: 0
-                    border-top: 1px solid #DDD
-                    border-bottom-width: 0
-                    background: #FFF
-                    box-sizing: border-box
-
-                    .editor {
-                        display: block
-                        padding: 4px 0
-                    //margin: 0 60px
-                        margin: 0 60px 0 10px
-
-                        textarea {
-                            line-height: 20px
-                            display: block
-                            resize: none
-                            outline: 0
-                            height: 0
-                            font-size: 14px
-                            border: 0
-                            margin: 4px 0
-                            width: 100%
-                            background-color: transparent
-                            overflow-y: hidden
-                            -webkit-transform: translateZ(0)
-                            -moz-transform: translateZ(0)
-                            -ms-transform: translateZ(0)
-                            -o-transform: translateZ(0)
-                            transform: translateZ(0)
-
-                            min-height: 20px
-                            height: 20px
-                        }
-                    }
-
-                    .left-btns {
-                        position: absolute
-                        left: 5px
-                        top: 10px
-                    }
-
-                    .right-btns {
-                        cursor: pointer
-                        color: #FFF
-                        position: absolute
-                        top: 7px
-                        right: 5px
-                        background-color: #07E
-                        width: 48px
-                        font-size: 14px
-                        text-align: center
-                        border-radius: 3px
-                        line-height: 26px
-                    }
-                }
-            }
-
-            &.settings {
+        .sessions {
+            .session {
+                border-bottom: 1px solid #EEE
+                height: 65px
+            //padding: 0 10px
                 position: relative
-                background-color: #F8F8F8
+                cursor: pointer
 
-                .setting {
-                    height: 40px
-                    line-height: 40px
-                    border-bottom: 1px solid #EEE
-                    background-color: #FFF
-                    padding-left: 15px
-                    cursor: pointer
+                &.active {
+                    background-color: #EFEFEF
+                    .highlight {
+                        display: block
+                    }
 
-                    .fa {
-                        margin-right: 5px
-                        font-size: 18px
-                        position: relative
-                        top: 2px
-                        width: 20px
+                    .stamp {
+                        .del {
+                            display: block
+                        }
                     }
                 }
 
-                .blank-split {
-                    height: 20px
-                    border-bottom: 1px solid #EEE
+                &:hover {
+                    background-color: #EFEFEF
+                    .stamp {
+                        .del {
+                            display: block
+                        }
+                    }
                 }
 
-                .go-back {
+                .highlight {
+                    display: none
                     position: absolute
-                    bottom: 0
-                    width: 100%
-                    background-color: #E5E5E5
-                    height: 50px
+                    height: 100%
+                    width: 4px
+                    background: #00A0E9
+                    left: 0
+                }
+                .avatar {
+                    height: 100%
+                    img {
+                        height: 50px
+                        width: 50px
+                        padding: 8px
+                    }
+                }
+                .customer {
+                    width: 140px
+                    height: 100%
+                    .name {
+                        color: #444
+                        margin: 6px 0 12px 0
+                        max-width: 135px
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        white-space: nowrap
+                    }
+                    .msg {
+                        color: #999
+                        max-width: 135px
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        white-space: nowrap
+                    //display: inline-block
+                    }
+                }
+                .stamp {
+                    width: 50px
+                    height: 100%
+                    position: relative
 
-                    span {
+                    & > div {
+                        position: absolute
+                    }
+
+                    .del {
+                        display: none
+                        top: 3px
+                        right: 3px
+                        font-size: 18px
+                        line-height: 0.8
+                        color: rgba(0, 0, 0, 0.4)
                         cursor: pointer
-                        display: block
-                        line-height: 34px
-                        text-align: center
-                        border: 1px solid #05A
-                        background-color: #06C
-                        color: #FFF
-                        margin: 10px 20px 0
 
                         &:hover {
-                            border: 1px solid #06C
-                            background-color: #05A
+                            color: rgba(0, 0, 0, 1)
                         }
+                    }
+                    .time {
+                        top: 8px
+                        right: 20px
+                        color: #BBB
+                        font-size: 13px
+                    }
+                    .count {
+                        top: 36px
+                        right: 20px
+                        font-size: 11px
+                        font-family: arial
+                        color: #FFF
+                        padding: 4px 6px 3px
+                        background-color: #FA0
+                        border-radius: 10px
                     }
                 }
             }
         }
     }
 }
+
+.im-chat-block {
+    position: fixed
+    width: 380px
+    bottom: 0
+    right: 280px
+
+    &.resize {
+        width: auto;
+        left: 10px;
+
+        & > .content {
+            height: 440px;
+        }
+
+    }
+
+    .brand {
+        width: 100%
+        height: 40px
+        line-height: 40px
+        background-color: #05A
+        color: #FFF
+        cursor: pointer
+
+        .title {
+            margin-left: 10px
+        }
+
+        .op {
+            margin-right: 10px
+            color: #CCC
+
+            .fa {
+                position: relative
+                top: 2px
+                margin-left: 5px
+                font-size: 20px
+
+                &:hover {
+                    color: #FFF
+                }
+            }
+        }
+    }
+
+    & > .content {
+        border-right: 1px solid #CCC
+        border-bottom: 1px solid #CCC
+        border-left: 1px solid #CCC
+        height: 350px
+        position: relative
+        background-color: #F8F8F8
+
+        // transition: all .6s ease-out
+
+        &.chat {
+            .messages {
+                position: absolute
+                top: 0
+                right: 0
+                bottom: 37px
+                left: 0
+                overflow-y: auto
+
+
+                .message {
+                    position: relative
+                    margin: 20px 10px
+
+                    .avatar {
+                        position: relative
+                        img {
+                            width: 32px
+                            height: 32px
+                            border-radius: 3px
+                        }
+                        &::after {
+                            content: attr(data-username)
+                            position: absolute
+                            font-size: 12px
+                            color: #BBB
+                            top: 0
+                            left: 40px
+                            white-space: nowrap
+                        }
+                    }
+
+                    .content {
+                        max-width: 260px
+                        margin: 20px 0 0 10px
+                        position: relative
+                        line-height: 18px
+                        color: #444
+                        font-size: 14px
+                        padding: 7px 8px
+                        margin-left: 7px
+                        border-radius: 3px
+                        background-color: #FFF
+                        box-shadow: -1px 1px 1px #DDD
+                        word-wrap: break-word
+                        display: inline-block
+
+                        &::after {
+                            content: attr(data-stamp)
+                            white-space: nowrap
+                            position: absolute
+                            right: -30px
+                            bottom: 0
+                            color: #AAA
+                            font-size: 10px
+                        }
+                    }
+
+                    &.customer {
+
+                    }
+
+                    &.me {
+                        .content {
+                            margin: 0 10px 0 0
+                            &::after {
+                                left: -30px
+                                right: auto
+                            }
+                        }
+                    }
+                }
+            }
+
+            .input-wrapper {
+                position: absolute
+                bottom: 0
+                left: 0
+                right: 0
+                border-top: 1px solid #DDD
+                border-bottom-width: 0
+                background: #FFF
+                box-sizing: border-box
+
+                .editor {
+                    display: block
+                    padding: 4px 0
+                //margin: 0 60px
+                    margin: 0 60px 0 10px
+
+                    textarea {
+                        line-height: 20px
+                        display: block
+                        resize: none
+                        outline: 0
+                        height: 0
+                        font-size: 14px
+                        border: 0
+                        margin: 4px 0
+                        width: 100%
+                        background-color: transparent
+                        overflow-y: hidden
+                        -webkit-transform: translateZ(0)
+                        -moz-transform: translateZ(0)
+                        -ms-transform: translateZ(0)
+                        -o-transform: translateZ(0)
+                        transform: translateZ(0)
+
+                        min-height: 20px
+                        height: 20px
+                    }
+                }
+
+                .left-btns {
+                    position: absolute
+                    left: 5px
+                    top: 10px
+                }
+
+                .right-btns {
+                    cursor: pointer
+                    color: #FFF
+                    position: absolute
+                    top: 7px
+                    right: 5px
+                    background-color: #07E
+                    width: 48px
+                    font-size: 14px
+                    text-align: center
+                    border-radius: 3px
+                    line-height: 26px
+                }
+            }
+        }
+
+        &.settings {
+            position: relative
+            background-color: #F8F8F8
+
+            .setting {
+                height: 40px
+                line-height: 40px
+                border-bottom: 1px solid #EEE
+                background-color: #FFF
+                padding-left: 15px
+                cursor: pointer
+
+                .fa {
+                    margin-right: 5px
+                    font-size: 18px
+                    position: relative
+                    top: 2px
+                    width: 20px
+                }
+            }
+
+            .blank-split {
+                height: 20px
+                border-bottom: 1px solid #EEE
+            }
+
+            .go-back {
+                position: absolute
+                bottom: 0
+                width: 100%
+                background-color: #E5E5E5
+                height: 50px
+
+                span {
+                    cursor: pointer
+                    display: block
+                    line-height: 34px
+                    text-align: center
+                    border: 1px solid #05A
+                    background-color: #06C
+                    color: #FFF
+                    margin: 10px 20px 0
+
+                    &:hover {
+                        border: 1px solid #06C
+                        background-color: #05A
+                    }
+                }
+            }
+        }
+    }
+}
+
