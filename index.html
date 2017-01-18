@@ -7,7 +7,6 @@
     <title>IM Demo</title>
 </head>
 <body>
-<!--<div class="im-wrapper">-->
     <div class="im-main-block clearfix">
         <div class="brand" func="collapse-im">
             <div class="title fl">聊天<span class="badge">**</span></div>
@@ -32,7 +31,10 @@
             </div>
         </div>
         <div class="content chat">
-            <div class="messages"><div class="message-wraaper"></div></div>
+            <div class="messages">
+                <div class="get-more-message"><i class="fa fa-hand-o-up"></i>拉取更多</div>
+                <div class="message-wraaper"></div>
+            </div>
             <div class="input-wrapper">
                 <div class="editor">
                     <textarea class="textarea" placeholder="请输入..." autofocus="true" maxlength="2500" func="your-message"></textarea>
@@ -52,17 +54,20 @@
             <div class="setting" func="clear-chat-history">
                 <i class="fa fa-trash"></i>清空聊天记录
             </div>
-
             <div class="go-back" func="go-back-chat">
                 <span>返回聊天</span>
             </div>
         </div>
-    <!--</div>-->
-</div>
+    </div>
 
 <script type="x-template" id="session">
     <% _.forEach(sessions, function(session) { %>
-        <div class="session clearfix" id="session-id-<%- session.account_id %>" account-id="<%- session.account_id %>" from-account-id="<%- session.last_message.from_account_id %>" to-account-id="<%- session.last_message.to_account_id %>">
+        <div class="session clearfix"
+             id="session-id-<%- session.account_id %>"
+             session-info="<%- JSON.stringify(session) %>"
+             account-id="<%- session.account_id %>"
+             from-account-id="<%- session.last_message.from_account_id %>"
+             to-account-id="<%- session.last_message.to_account_id %>">
             <div class="highlight"></div>
             <div class="avatar fl">
                 <img src="<%- session.avatar %>" alt="我是头像">

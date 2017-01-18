@@ -16,7 +16,8 @@ $(function () {
                 get_session_list: '/?m=module_g_im.im.get_chat_list',
                 del_session: '/?m=module_g_im.im.delete_chat_item',
                 send_msg: '/?m=module_g_im.im.send_message',
-                get_session_history: '/?m=module_g_im.im.get_history_message',
+                get_message_history: '/?m=module_g_im.im.get_history_message',
+                get_message_history_buy_cursor: '/?m=module_g_im.im.get_history_message',
                 poll_new_msg: '/?m=module_g_im.im.get_new_message',
                 search_user: '/?m=module_kaiy_account.ui_data.search_im_users'
             },
@@ -24,7 +25,8 @@ $(function () {
                 get_session_list: '/mock/001_get_session_list.json',
                 del_session: '/mock/002_del_session.json',
                 send_msg: '/mock/003_send_msg.json',
-                get_session_history: '/mock/004_get_session_history.json',
+                get_message_history: '/mock/004_get_message_history.json',
+                get_message_history_buy_cursor: '/mock/004_get_message_history_buy_cursor.json',
                 poll_new_msg: '/mock/005_poll_new_msg.json',
                 search_user: '/mock/006_search_user.json'
             }
@@ -55,9 +57,6 @@ $(function () {
             })
 
             return url
-        },
-        poll: function () {
-
         }
     }
 
@@ -126,8 +125,13 @@ $(function () {
 
         $yourMessage: $('[func="your-message"]'),
         $send: $('[func="send-message"]'),
-        $badge: $('.im-main-block .brand .badge')
+        $badge: $('.im-main-block .brand .badge'),
+
+        $getMoreMessage: $('.get-more-message')
     }
+
+    // 从会话列表打开聊天窗口时，保存当前会话的一些基本信息
+    var CURRENT_SESSION
 
     var methods = {
         init: function () {
@@ -161,7 +165,7 @@ $(function () {
                 })
             },
             getSessionHistory: function (from_account_id, to_account_id) {
-                dispatcher('get_session_history', {
+                dispatcher('get_message_history', {
                     to_account_id: to_account_id
                 }, function (data) {
                     var tpl = template.compile('message', {
@@ -172,7 +176,7 @@ $(function () {
                     })
                     props.$messagesBlock.empty().append(tpl)
 
-                    // 轮询当前聊天对话是否有新消息
+                    轮询当前聊天对话是否有新消息
                     global.ticket = setInterval(function () {
                         dispatcher('poll_new_msg', {
                             to_account_id: to_account_id
@@ -198,6 +202,8 @@ $(function () {
             // 从会话列表打开某一个聊天窗口
             props.$session = $('.im-main-block .list .session')
             props.$session.on('click', function () {
+                CURRENT_SESSION = JSON.parse($(this).attr('session-info'))
+
                 var nickname = $(this).find('.name').html()
                 $('.im-chat-block .title').html(nickname)
 
@@ -426,6 +432,38 @@ $(function () {
                     methods.toggleSession(true)
                 }
             })
+
+            // 上拉对话窗口到顶部时，拉取更多的历史记录
+            $('.im-chat-block .content.chat .messages').scroll(function(ev) {
+                if (ev.target.scrollTop <= 0) {
+                    methods.getMoreMsg()
+                }
+            })
+
+            props.$getMoreMessage.on('click', function(ev) {
+                methods.getMoreMsg()
+            })
+
+        },
+        getMoreMsg: function() {
+            dispatcher('get_message_history_buy_cursor', {
+                to_account_id: CURRENT_SESSION.last_message.to_account_id,
+                cursor: CURRENT_SESSION.last_message.timestamp
+            }, function (data) {
+                if (data && data.length) {
+                    var tpl = template.compile('message', {
+                        messages: data,
+                        filters: template.filters,
+                        from_account_id: CURRENT_SESSION.last_message.from_account_id,
+                        to_account_id: CURRENT_SESSION.last_message.to_account_id
+                    })
+
+                    props.$messagesBlock.prepend(tpl)
+                } else {
+                    alert('已无历史聊天数据记录')
+                }
+            })
+
         },
         updateUnreadCount: function (data) {
             var total = 0
@@ -508,6 +546,9 @@ $(function () {
 
             props.$messagesBlock.append($(markup))
             methods.scroll2Bottom()
+        },
+        scroll2Top: function () {
+            $('.im-chat-block .content.chat .messages').scrollTop(0)
         },
         scroll2Bottom: function () {
             $('.im-chat-block .content.chat .messages').scrollTop(props.$messagesBlock.height())

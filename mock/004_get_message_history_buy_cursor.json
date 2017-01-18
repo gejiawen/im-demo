@@ -1,0 +1,15 @@
+{
+    "code": 0,
+    "data": [
+        {
+            "from_account_id": "aaa",
+            "to_account_id": "cccc",
+            "msg_id": "b271937698a698e469ae5622fd95f2bb",
+            "type": 1,
+            "content": "我是历史记录",
+            "timestamp": 1483864029723,
+            "nickname": "AAA",
+            "avatar": "./images/customer.png"
+        }
+    ]
+}
