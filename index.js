@@ -256,7 +256,13 @@ $(function () {
                         $('.sessions.list .session .stamp').each(function () {
                             remind += parseInt($(this).find('.count').html())
                         })
-                        props.$badge.html(remind)
+
+                        if(remind === 0) {
+                            props.$badge.html(0).hide()
+                        } else {
+                            props.$badge.html(remind)
+                        }
+
                     }
                 })
             })
