@@ -176,7 +176,7 @@ $(function () {
                     })
                     props.$messagesBlock.empty().append(tpl)
 
-                    轮询当前聊天对话是否有新消息
+                    // 轮询当前聊天对话是否有新消息
                     global.ticket = setInterval(function () {
                         dispatcher('poll_new_msg', {
                             to_account_id: to_account_id
