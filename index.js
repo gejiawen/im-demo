@@ -132,6 +132,8 @@ $(function () {
 
     // 从会话列表打开聊天窗口时，保存当前会话的一些基本信息
     var CURRENT_SESSION
+    var STRANGER_SESSION
+    var SESSION_TYPE = 1 // 1：会话列表  2：搜索结果
 
     var methods = {
         init: function () {
@@ -202,7 +204,9 @@ $(function () {
             // 从会话列表打开某一个聊天窗口
             props.$session = $('.im-main-block .list .session')
             props.$session.on('click', function () {
+                SESSION_TYPE = 1
                 CURRENT_SESSION = JSON.parse($(this).attr('session-info'))
+                $('.get-more-message').show()
 
                 var nickname = $(this).find('.name').html()
                 $('.im-chat-block .title').html(nickname)
@@ -247,6 +251,12 @@ $(function () {
                 }, function (data, code) {
                     if (code === 0) {
                         $('#session-id-' + to_account_id).remove()
+
+                        var remind = 0
+                        $('.sessions.list .session .stamp').each(function () {
+                            remind += parseInt($(this).find('.count').html())
+                        })
+                        props.$badge.html(remind)
                     }
                 })
             })
@@ -255,7 +265,9 @@ $(function () {
             // 从搜索结果中打开某一个聊天窗口
             props.$session = $('.im-main-block .result .session')
             props.$session.on('click', function () {
+                SESSION_TYPE = 2
                 clearTimeout(global.ticket)
+                $('.get-more-message').hide()
                 var nickname = $(this).find('.name').html()
                 $('.im-chat-block .title').html(nickname)
 
@@ -385,14 +397,17 @@ $(function () {
             // 聊天消息输入监控
             // 主要是为了适配输入框的高度变化
             props.$yourMessage.on('keyup', function (ev) {
-                if (ev.keyCode === 13) {
-                    props.$send.click()
-                }
-
-                if (!$(this).val()) {
+                var val = $(this).val()
+                if (!val || val.indexOf('\n') === 0) {
                     $(this).css({
                         'height': 0
                     });
+                    $(this).val('')
+                    return
+                }
+
+                if (ev.keyCode === 13) {
+                    props.$send.click()
                 }
 
                 var scrollHeight = ev.target.scrollHeight
@@ -446,6 +461,10 @@ $(function () {
 
         },
         getMoreMsg: function() {
+            if (SESSION_TYPE == 2) {
+                return
+            }
+
             dispatcher('get_message_history_buy_cursor', {
                 to_account_id: CURRENT_SESSION.last_message.to_account_id,
                 cursor: CURRENT_SESSION.last_message.timestamp
