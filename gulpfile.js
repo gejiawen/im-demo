@@ -20,7 +20,7 @@ gulp.task('stylus-with-sourcemaps', () => {
 
 gulp.task('default', ['stylus-with-sourcemaps'])
 gulp.task('serve', ['stylus-with-sourcemaps'], () => {
-    exec('hs .', (error, stdout, stderr) => {
+    exec('hs . -p 9999', (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`)
             return

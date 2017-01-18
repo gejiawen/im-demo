@@ -10,7 +10,7 @@ $(function () {
     var global = {
         ticket: null,
         mock: true,
-        prefix: 'http://127.0.0.1:8080',
+        prefix: 'http://127.0.0.1:9999',
         urls: {
             online: {
                 get_session_list: '/?m=module_g_im.im.get_chat_list',
@@ -262,6 +262,17 @@ $(function () {
                 var to_account_id = $(this).attr('account-id')
                 props.$chatContent.attr('to-account-id', to_account_id)
 
+                // 轮询当前聊天对话是否有新消息
+                global.ticket = setInterval(function () {
+                    dispatcher('poll_new_msg', {
+                        to_account_id: to_account_id
+                    }, function (data) {
+                        if (data.length) {
+                            methods.genCustomer(data)
+                        }
+                    })
+                }, 4000)
+
                 // methods.request.getSessionHistory(from_account_id, to_account_id)
             })
         },
@@ -427,11 +438,11 @@ $(function () {
             var $brand = props.$main.find('.brand .fa')
             var $content = props.$main.find('.content')
 
-            if ($content.hasClass('collapse')) {
-                $content.removeClass('collapse')
+            if ($content.hasClass('bump')) {
+                $content.removeClass('bump')
                 $brand.removeClass('fa-angle-down').addClass('fa-angle-up')
             } else {
-                $content.addClass('collapse')
+                $content.addClass('bump')
                 $brand.removeClass('fa-angle-up').addClass('fa-angle-down')
             }
         },
